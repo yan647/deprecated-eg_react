@@ -1,7 +1,7 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import * as ReactDOMClient from 'react-dom/client';
-import Square from './components/Square';
+import './style.scss';
+import Board from './components/Board';
 
 const targetDom = document.getElementById('root');
 
@@ -12,9 +12,9 @@ const targetDom = document.getElementById('root');
 // https://blog.saeloun.com/2021/07/15/react-18-adds-new-root-api
 const root = ReactDOMClient.createRoot(targetDom);
 root.render(
-  <div>
-    <div>hello world!</div>
-    <Square></Square>
-  </div>
+  <>
+    <div>Tic-Tac-Toe</div>
+    <Board></Board>
+  </>
 );
 
