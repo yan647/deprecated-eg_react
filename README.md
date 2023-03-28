@@ -6,7 +6,7 @@
 开始
 - yarn start
 
-步骤
+搭建react webpack的步骤
 - yarn init
 - yarn add react react-dom webpack webpack-cli
 - npx webpack init
