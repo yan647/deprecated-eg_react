@@ -7,7 +7,7 @@ export default function Board() {
       {
         columns.map((column, colIndex) => {
           return (<div className="board-row" key={colIndex}>
-            {column.map((row,rowIndex) => (<Square rowIndex={rowIndex} colIndex={colIndex}/>))}
+            {column.map(() => (<Square />))}
           </div>)
         })
       }

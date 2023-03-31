@@ -1,4 +1,9 @@
-export default function Square(props:{rowIndex: number, colIndex: number}){
-  const {rowIndex, colIndex} = props
-  return <button className="square" >{colIndex*3+rowIndex+1}</button>;
+import {useState} from 'react';
+
+export default function Square() {
+  const [value, setValue] = useState(null);
+  const handleSquareClick = () => {
+    setValue('X')
+  }
+  return <button className="square" onClick={handleSquareClick}>{value}</button>;
 }
