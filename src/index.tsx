@@ -1,7 +1,7 @@
 import React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
 import './style.scss';
-import Board from './components/Board';
+import Game from './components/Game';
 
 const targetDom = document.getElementById('root');
 
@@ -14,7 +14,7 @@ const root = ReactDOMClient.createRoot(targetDom);
 root.render(
   <>
     <div>Tic-Tac-Toe</div>
-    <Board></Board>
+    <Game></Game>
   </>
 );
 
