@@ -170,4 +170,103 @@ export default myComponent;
 
 因此，在现实项目中，我们需要综合考虑纯函数和非纯函数的使用，根据实际场景做出合理的选择，以确保代码的可读性、可维护性和可测试性。
 
+### useEffect与useLayoutEffect的区别
+在 React 中，`useEffect` 和 `useLayoutEffect` 都是 React 提供的 hooks，用于在函数式组件中定义副作用。它们的执行时间和返回值略有不同，具体如下：
+
+1. `useEffect`
+
+`useEffect` 用于在 React 组件渲染完成后执行一些副作用操作，例如订阅主题、更新状态等。它的注意点如下：
+
+- `useEffect` 中定义的副作用操作是异步执行的。也就是说，在该副作用操作执行之前，React 组件已经完成了渲染。
+- `useEffect` 的函数参数是异步执行的。这意味着 React 首先会执行完所有组件的渲染操作，然后才会执行 `useEffect` 中定义的函数。
+- `useEffect` 函数可以返回一个函数，用于清理该副作用，类似于类组件中的 `componentWillUnmount` 钩子。当组件即将卸载时，React 就会执行这个清理函数。如果需要对多个状态进行订阅，通常需要在清理函数中取消这些订阅。
+
+2. `useLayoutEffect`
+
+`useLayoutEffect` 与 `useEffect` 类似，也用于定义副作用操作，但是有以下区别：
+
+- `useLayoutEffect` 中定义的副作用操作是同步执行的。也就是说，在该副作用操作执行之前，组件的 DOM 已经更新完成，但是尚未到浏览器绘制的阶段。
+- `useLayoutEffect` 的函数参数是同步执行的。也就是说，在该函数执行完毕之前，React 不会继续画面渲染，等待其执行结果。
+
+因此，如果副作用操作会改变组件的样式或者布局，那么建议优先使用 `useLayoutEffect`，这可以避免渲染后用户短暂的视觉闪烁。如果副作用操作仅仅是数据统计、网络请求等不涉及 DOM 操作的异步任务，则可以使用 `useEffect`。 在大多数情况下，应该使用 `useEffect`，只有当需要在 DOM 绘制之前处理计算或修改 DOM 的属性时，才考虑使用 `useLayoutEffect`。
+
+### useEffect与useCallback的区别
+
+在 React 中，`useCallback` 与 `useEffect` 都是 React 提供的 hook，它们的作用虽然都是用于优化性能，但是具有不同的用途和执行时机，区别如下：
+
+1. 用途不同
+
+`useCallback` 用于缓存函数，避免不必要的重复创建和渲染，从而提高 React 应用的性能。而 `useEffect` 用于在组件渲染时执行一些副作用操作，比如网络请求、订阅主题等，可以访问并改变组件的状态、属性等。
+
+2. 执行时机不同
+
+`useCallback` 在渲染时就会执行，然后返回一个 memoized 的函数。所以在组件内部使用 `useCallback` 返回的函数，永远是同一个函数（除非依赖项变化），这样可以避免在每次渲染时创建新的函数，提高性能。
+
+而 `useEffect` 是在组件渲染完成之后才会执行的，它可以在组件更新后自动清理原来的副作用操作。`useEffect` 可以监听组件的状态、属性等变化，并且可以访问这些变量，执行定义好的副作用操作。
+
+3. 依赖项参数不同
+
+`useCallback` 依赖项参数指定了该函数依赖的变量，即当依赖项变化时，返回一个新的 memoized 函数。而 `useEffect` 依赖项参数指定了监听的状态，当依赖项变化时，执行副作用操作。
+
+因此，`useCallback` 与 `useEffect` 主要区别在于用途和执行时机，前者用于缓存函数，减少渲染次数，后者用于执行副作用操作，根据指定的形式执行并清除副作用操作。同时，`useCallback` 与 `useEffect` 接受的依赖项参数也不一样，前者依赖于函数内部的变量，后者依赖于 useEffect 的依赖项数组。
+
+
+### 调用一个后端接口时，应该使用useEffect还是useCallback?
+
+在 React 中，`useEffect` 和 `useCallback` 都可以用于调用后端接口，但是它们的使用方式和作用是不同的。因此，需要视具体情况而定，选择合适的 hook 来进行使用。
+
+1. useEffect的使用
+
+`useEffect` 用于在函数组件中执行副作用操作，比如异步请求后端接口。因为请求后端接口一般是一次性操作，所以它需要在组件挂载时执行，因此，我们可以将请求代码放在`useEffect`函数体中。
+
+例如：
+
+```
+import React, { useState, useEffect } from 'react';
+function MyComponent(props) {
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    fetch('/api/data')
+      .then(response => response.json())
+      .then(resData => setData(resData))
+      .catch(error => console.log(error));
+  }, []);
+  return <div>{ data }</div>;
+}
+```
+
+这个例子中，我们在组件挂载时请求了后端接口并更新了组件状态。
+
+2. useCallback的使用
+
+`useCallback` 用于缓存函数，避免在每次组件重新渲染时都创建新的函数实例。因此，它可以用于缓存一个回调函数，该回调函数在其他组件中使用，并且依赖于其他状态变量。
+
+例如：
+
+```
+import React, { useState, useCallback } from 'react';
+function MyComponent(props) {
+  const [data, setData] = useState([]);
+  const fetchData = useCallback(() => {
+    fetch('/api/data')
+      .then(response => response.json())
+      .then(resData => setData(resData))
+      .catch(error => console.log(error));
+  }, []);
+  return (
+    <div>
+      <button onClick={fetchData}>Load Data</button>
+      { data }
+    </div>
+  );
+}
+```
+
+这个例子中，我们在组件中缓存了一个回调函数 `fetchData`，该函数用于请求后端接口，并在用户点击按钮时触发。由于此回调函数在其他组件中也可能被使用，因此，使用 `useCallback` 进行函数缓存可以提高性能。
+
+总结：
+
+使用 `useEffect` 和 `useCallback` 来调用后端接口，需要结合具体情况选择合适的 hook 来进行使用。如果是一次性的请求，在组件挂载时就应该发起请求，则使用 `useEffect`。如果后端接口需要处理后才能被其他组件使用，则将其封装成一个回调函数，并使用 `useCallback` 进行缓存，以提高性能并确保它在各个组件中的一致性。
+
+
 [官网对useEffect的介绍](https://react.dev/reference/react/useEffect)
