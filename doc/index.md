@@ -13,8 +13,8 @@
 - 听说React的状态管理工具还有redux，与mobx的异同、优缺点`TODO`
 
 ### hook相关
-- [React中的hook是什么](./hook.md)`TODO`
-- useState等怎么用`TODO`
+- [React中的hook是什么](hook.md)`TODO`
+- [useState等怎么用](useState.md)
 - React中的函数组件和类组件的异同、优缺点`TODO`
 
 ### 与vue的异同
@@ -24,5 +24,5 @@
 
 ### 开发React过程中易犯的错误
 - 由于没有使用hook导致出现死循环`TODO`
-- [React中该用该用useRef的地方没有用，会发生什么？](./useRef.md)`TODO`
-- [React中该用该用useEffect的地方没有用，会发生什么？](./useEffect.md)`TODO`
+- [React中该用该用useRef的地方没有用，会发生什么？](useRef.md)
+- [React中该用该用useEffect的地方没有用，会发生什么？](useEffect.md)
