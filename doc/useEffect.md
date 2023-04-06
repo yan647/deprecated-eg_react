@@ -83,6 +83,10 @@ function Example() {
 
 同时，我们实现了一个名为`handleInputChange`的函数来更新`userData`，此处使用了展开运算符进行浅拷贝对象，并在相关的`<input>`中通过`onChange`事件绑定了该函数，使得用户在输入时能够动态更新对象。
 
+官网建议不要监听对象，而是直接监听对象的属性：
+
+- If your Effect depends on an object or a function created during rendering, it might run too often. For example, this Effect re-connects after every render because the options object is different for every render
+- By itself, creating a function from scratch on every re-render is not a problem. You don’t need to optimize that. However, if you use it as a dependency of your Effect, it will cause your Effect to re-run after every re-render.
 
 ### 不在组件顶层调用useEffect的危害
 在 React 中使用 `useEffect` 钩子是处理副作用操作的一种方式，它是一个 React 的 Hook，旨在使用函数组件来实现类组件的一些生命周期的能力。
