@@ -146,10 +146,54 @@ React会在开发环境调用两次你的更新函数以确保他们是纯的。
 > <br/>
 > 你可能听说过一个建议：如果你设置的`state`是根据之前的`state`计算得到的，总是`setAge(a=>a+1)`这样写代码。这是没有危害的，但是它也不总是必须的。
 > <br/>
-> 多数情况下，这两种方式没有任何区别。React总会确保，对于用户的交互操作比如点击，`age`状态变量会在下次点击前更新。这就意味着
+> 多数情况下，这两种方式没有任何区别。React总会确保，对于用户的交互操作比如点击，`age`状态变量会在下次点击前更新。这就意味着一个点击处理程序会在事件处理器开始时看到无效的`age`。
+> 然而，如果在同一个事件里进行多次更新，更新函数会很有帮助。如果访问`state`变量本身不方便，他们也很有帮助（在优化重渲染时可能会遇到这种情况）。
+> 如果你更倾向于一致性而不是稍微冗长的语法，如果你设置的`state`是用之前的`state`计算出的，那么经常编写更新器是合理的。如果它是根据之前的一些其他`state`变量计算出的，你可能想使用一个`reducer`把他们合并为一个对象
+> 
 
+### 在`state`中更新对象和数组
+你可以把对象和数组放到`state`中。在React中，`state`被认为是只读的，所以你应该替换他们而不是改变已存在的对象。比如，如果你在`state`中有一个`form`对象，不改变它：
 
-`TODO`
+```javascript
+// 🚩 Don't mutate an object in state like this:
+form.firstName = 'Taylor';
+```
+
+相反，用一下新建的对象替换整个已有对象：
+```javascript
+// ✅ Replace state with a new object
+setForm({
+  ...form,
+  firstName: 'Taylor'
+});
+```
+
+### 避免再次初始化`state`
+React会保存一次初始的`state`而且在下次渲染时忽略它
+
+```javascript
+function TodoList() {
+  const [todos, setTodos] = useState(createInitialTodos());
+  // ...
+}
+```
+
+尽管`createInitialTodos()`的结果只被用在初始化渲染中，你也仍然会在每次渲染时调用这个函数。如果它创建了很大的数组或者做了很复杂的计算，将会很浪费。
+为了解决这个问题，你可以在`useState`中用一个初始化函数来代替：
+```javascript
+function TodoList() {
+  const [todos, setTodos] = useState(createInitialTodos);
+  // ...
+}
+```
+
+注意你传入了`createInitialTodos`，这是函数本身，而不是`createInitialTodos()`调用它后的结果。如果你传一个函数给`useState`,React只会在初始化期间调用它。
+
+React可能在开发环境调用你的初始化器两次用以验证他们是纯的。
+
+### 使用`key`重置`state`
+你会经常在渲染列表中遇到`key`属性。然而，它也有其他目的。
+你可以通过给组件传递一个不同的`key`来重置一个组件的`state`。在这个例子中，`Reset`按钮改变了`version`变量，我们把它作为一个`key`传给了`Form`。当`key`改变时，React重置`Form`组件（和它所有的子组件），所以它的状态也被重置了。
 
 ### 存储以前渲染的信息
 通常，你会在事件处理程序中更新`state`。然而，在极少数情况下，你可能希望修改`state`以响应渲染—-例如，你可能希望在prop发生变化时修改`state`变量。
@@ -357,6 +401,7 @@ function handleClick() {
 - React会通过Object.is来比较新旧值是否相同，意味着如果`state`是对象或数组，只做浅比较。
 - React更新`state`时是批量更新的。[如何做批量更新的](https://overreacted.io/react-as-a-ui-runtime/#batching)。（[这篇文档的全部翻译](https://thoamsy.github.io/blogs/react-as-a-runtime/)）
 - `set`函数是异步的，如果在`set`后立即读取`state`值，不能保证能够获取到最新的`state`。如果需要在更新后立即访问`state`，可以使用`useEffect`钩子函数来实现。
+- 如果你传一个函数给`useState`,React只会在初始化期间调用它
 - 
 
 
