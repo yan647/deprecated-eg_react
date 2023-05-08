@@ -99,7 +99,7 @@ React会存储新的`state`，使用新值重新渲染组件，更新UI。
 ```javascript
 function handleClick() {
 setName('Robin');
-console.log(name); // Still "Taylor"!
+console.log(name); // 仍然是 "Taylor"!
 }
 ```
 
@@ -155,13 +155,13 @@ React会在开发环境调用两次你的更新函数以确保他们是纯的。
 你可以把对象和数组放到`state`中。在React中，`state`被认为是只读的，所以你应该替换他们而不是改变已存在的对象。比如，如果你在`state`中有一个`form`对象，不改变它：
 
 ```javascript
-// 🚩 Don't mutate an object in state like this:
+// 🚩 不要像这样改变`state`中的对象：
 form.firstName = 'Taylor';
 ```
 
 相反，用一下新建的对象替换整个已有对象：
 ```javascript
-// ✅ Replace state with a new object
+// ✅ 用一个新对象替换`state`
 setForm({
   ...form,
   firstName: 'Taylor'
@@ -269,11 +269,11 @@ export default function CountLabel({ count }) {
 function handleClick() {
   console.log(count);  // 0
 
-  setCount(count + 1); // Request a re-render with 1
-  console.log(count);  // Still 0!
+  setCount(count + 1); // 需要用1重渲染
+  console.log(count);  // 仍然是 0!
 
   setTimeout(() => {
-    console.log(count); // Also 0!
+    console.log(count); // 也是 0!
   }, 5000);
 }
 ```
@@ -295,14 +295,14 @@ console.log(nextCount); // 1
 如果下一个`state`值等于前一个`state`值，React会忽略你的更新，这由`Object.is`的比较结果来决定。这经常发生在当你在`state`中修改一个对象或数组时：
 
 ```javascript
-obj.x = 10;  // 🚩 Wrong: mutating existing object
-setObj(obj); // 🚩 Doesn't do anything
+obj.x = 10;  // 🚩 错误: 改变了已存在的对象
+setObj(obj); // 🚩 没有做任何事
 ```
 
 你修改一个已经存在的对象`obj`而且把它传递给`setObj`，所以React忽略了更新。为了修复它，你需要确定你在`state`中总是替换对象和数组而不是修改他们：
 
 ```javascript
-// ✅ Correct: creating a new object
+// ✅ 正确：创建了一个新对象
 setObj({
   ...obj,
   x: 10
@@ -394,7 +394,7 @@ function handleClick() {
 ```
 
 ---
-## 我的总结
+## 译者的学习总结
 - 要在顶层调用，不要在循环或条件语句中调用它。
 - 初始化函数在开发环境下会调用两次，但在生产环境只调用一次，这是正常的。目的是辅助判断初始化函数是否为纯函数。
 - 初始化函数必须是纯函数，而且不接受参数，返回一个新的`state`值。更新函数必须是纯函数，只接受待处理的`state`作为它唯一的参数，没有返回值。
